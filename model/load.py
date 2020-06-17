@@ -1,11 +1,7 @@
-import numpy as np
 import tensorflow.keras.models
-from scipy.misc import imread, imresize, imshow
-import tensorflow as tf
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Dense, Dropout, Flatten
+from tensorflow.keras.models import Sequential
 
 
 def init():
@@ -22,7 +18,7 @@ def init():
     model.add(Dropout(0.5))
     model.add(Dense(num_classes, activation='softmax'))
 
-    # load woeights into new model
+    # load weights into new model
     model.load_weights("weights.h5")
     print("Loaded Model from disk")
 
