@@ -39,6 +39,7 @@ APP=mnist-flask-app
 NO_PORT=false
 ENTRYPOINT=
 DOCKER_OPTIONS=()
+TF_SERVING_URI=
 
 usage() {
     echo "Run $APP application"
@@ -48,6 +49,8 @@ usage() {
     echo "      --no-port              Do not map ports"
     echo "                             (default: ${NO_PORT})"
     echo "      --entrypoint           Set docker entrypoint"
+    echo "      --network              Set docker network"
+    echo "      --tf-serving-uri       Use TF serving URI instead of local model"
     echo "      --help                 Display this help and exit"
 }
 
@@ -64,6 +67,22 @@ while [[ $# -gt 0 ]]; do
         --entrypoint=*)
             ENTRYPOINT=${1#*=}
             shift
+            ;;
+        --network)
+            DOCKER_OPTIONS+=("--network=$2")
+            shift 2
+            ;;
+        --network=*)
+            DOCKER_OPTIONS+=("--network=${1#*=}")
+            shift
+            ;;
+        --tf-serving-uri=*)
+            TF_SERVING_URI=${1#*=}
+            shift
+            ;;
+        --tf-serving-uri)
+            TF_SERVING_URI=$2
+            shift 2
             ;;
         --help)
             usage
@@ -87,6 +106,9 @@ if [[ "$NO_PORT" != "true" ]]; then
 fi
 if [[ -n "$ENTRYPOINT" ]]; then
     DOCKER_OPTIONS+=("--entrypoint=${ENTRYPOINT}")
+fi
+if [[ -n "$TF_SERVING_URI" ]]; then
+    DOCKER_OPTIONS+=("--env=TF_SERVING_URI=${TF_SERVING_URI}")
 fi
 
 set -xe
